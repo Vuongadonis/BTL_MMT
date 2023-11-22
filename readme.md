@@ -1,3 +1,5 @@
+if you run just in your laptop, do not have to chang the host and port
+Otherwise, you must check ip in setting and change the ip of bigboss and peerdown
 1. run test_list.py
 2. run peer_down.py
 3. write "add list" in terminal of peer_down (do not have "")
