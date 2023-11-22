@@ -4,8 +4,6 @@ import pickle
 import subprocess
 
 sockets_list = [
-    [[], []],
-    []
 ]
 # socket_list[0][0] = ip(hostname) + port of first peer
 # socket_list[0][1] = list_file of this hostname of first peer
@@ -13,7 +11,7 @@ sockets_list = [
 # socket_list[1][1] = list_file of this hostname of second peer
 
 # serversocket = 0
-server_host = "192.168.31.162"
+server_host = "192.168.72.183"
 server_port = 5000
 
 
@@ -57,9 +55,10 @@ def new_connection(addr, conn):
 
         match str_recv:
             case "add list":
-                print("add list: ")
+                print("add list: ", end="")
                 item = pickle.loads(addr.recv(4096))
-                sockets_list[0][0].append(item)
+                item_add = [item, []]
+                sockets_list.append(item)
                 print(item)
                 addr.send(bytes("receive success", "utf-8"))
                 status = ""
@@ -75,21 +74,36 @@ def new_connection(addr, conn):
                 addr.send(bytes("receive success", "utf-8"))
                 # send hostname and port have this file
                 flag = True
-                for index1, i in enumerate(sockets_list):
-                    if isinstance(i, list):
-                        for index2, item in enumerate(i):
+                # sockets_list = [
+                #     [[], ["1"]],
+                #     [[], ["2"]]
+                # ]
+
+                for index1, client in enumerate(sockets_list):
+                    if isinstance(client, list):
+                        for index2, item in enumerate(client):
                             for index3, k in enumerate(item):
                                 if k == str_recv:
                                     print(
-                                        f"Index: {index1, index2, index3}, Value: {k, i[0]}")
-                                    data = pickle.dumps(i[0])
+                                        f"Index: {index1, index2, index3}, Value: {k, client[0]}")
+                                    data = pickle.dumps(client[0])
                                     addr.send(data)
                                     flag = False
+
                 if flag:
                     addr.send(bytes("do not have this file", "utf-8"))
             case "public":
+                ip_port = pickle.loads(addr.recv(4096))
+                addr.send(bytes("receive ip port success", "utf-8"))
                 str_recv = addr.recv(16)
-                sockets_list[0][1].append(str(str_recv, "utf-8"))
+                print("ip: ", ip_port)
+                for client in sockets_list:
+                    if client == ip_port:
+                        print("add success", client[1])
+                        arr = [str_recv]
+                        client.append(str(str_recv))
+                        print(client)
+                        break
                 addr.send(bytes("receive success", "utf-8"))
                 print(str_recv)
 

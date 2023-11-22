@@ -147,6 +147,12 @@ def peer_handle_command(client_socket, mess):
             client_socket.send(bytes(command[0], "utf-8"))
             # wait boss return succeed then send continue
             client_socket.recv(16)
+
+            data = [localhost, peerport]
+            data = pickle.dumps(data)
+            client_socket.send(data)
+            client_socket.recv(16)
+
             lname = command[1]
             fname = command[2]
             client_socket.send(bytes(command[2], "utf-8"))
