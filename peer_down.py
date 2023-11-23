@@ -42,12 +42,12 @@ def new_connection(addr, conn):
     # find the path of this file in the file_list
     file_path = find_path(file_name)
     # check if it còn tồn tại
-    if os.path.exists(file_path + "image.png") == True:
+    if os.path.exists(file_path + file_name) == True:
         print("Tệp tồn tại trong hệ thống.")
     else:
         print("Tệp không tồn tại trong hệ thống.")
     # Dòng này mở tệp hình ảnh "image.png" trong chế độ đọc nhị phân (binary).
-    file = open(file_path + "image.png", "rb")
+    file = open(file_path + file_name, "rb")
     # Dòng này lấy kích thước của tệp hình ảnh "image.png" bằng cách sử dụng hàm os.path.getsize()
     file_size = os.path.getsize(file_path)
     # addr.send("received_image.png".encode())
@@ -96,7 +96,7 @@ def peer_down_file(info, file_name):
     print(file_size)
     # Dòng này mở tệp với tên tệp đã nhận từ máy khách trong chế độ ghi nhị phân (binary).
     # wb = chế độ ghi nhị phân (ghi theo bytes), nếu không có file sẽ tự tạo file
-    file = open(file_path_save + file_name + ".png", "wb")
+    file = open(file_path_save + file_name, "wb")
     # Dòng này khởi tạo một biến để lưu trữ dữ liệu của tệp.
     file_bytes = b""
     # Dòng này khởi tạo một biến để đánh dấu khi quá trình nhận tệp hoàn tất.
