@@ -12,14 +12,36 @@ boss_port = 5000
 # boss_host = "192.168.31.162"
 localhost = socket.gethostname()
 boss_host = socket.gethostname()
-file_path = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
+file_list = []  # file_list[[path1, file_name1], [path2, filename2]]
+# file_path = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
+file_path = ""
 file_path_save = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
+
+
+def add_path(lname, fname):
+    item = [lname, fname]
+    file_list.append(item)
+    print("add success", file_list)
+
+
+def find_path(file_name):
+    for item in file_list:
+        if item[1] == file_name:
+            file_path = item[0]
+    print("path: ", file_path)
+    return file_path
 
 
 def new_connection(addr, conn):
     str_recv = addr.recv(16)
     str_recv = str(str_recv, "utf-8")
     print(str_recv)
+    addr.send(bytes("receive success ", "utf-8"))
+    # receive file name from peer want to down file
+    file_name = str(addr.recv(16), "utf-8")
+    # find the path of this file in the file_list
+    file_path = find_path(file_name)
+    # check if it còn tồn tại
     if os.path.exists(file_path + "image.png") == True:
         print("Tệp tồn tại trong hệ thống.")
     else:
@@ -61,11 +83,13 @@ def peer_server_create(host, port):
 def peer_down_file(info, file_name):
     # connect to peer have file
     peer_socket = socket.socket()
-    peer_socket.connect((info[0][0], info[0][1]))
+    peer_socket.connect((info[0], int(info[1])))
     message = "hello from " + str(peerport)
     peer_socket.send(bytes(message, "utf-8"))
     print(info)
-    # Dòng này nhận tên tệp từ máy khách, sau đó chuyển đổi từ dạng bytes sang dạng chuỗi (decode()).
+    # Dòng này gửi file name qua cho peer kia
+    peer_socket.recv(16)
+    peer_socket.send(bytes(file_name, "utf-8"))
     print(file_name)
     # Dòng này nhận kích thước tệp từ máy khách, sau đó chuyển đổi từ dạng bytes sang dạng chuỗi (decode()).
     file_size = peer_socket.recv(1024).decode()
@@ -114,7 +138,7 @@ def peer_handle_command(client_socket, mess):
             # wait boss return succeed then send continue
             client_socket.recv(16)
             # send information
-            data = [localhost, peerport]
+            data = [localhost, str(peerport)]
             data = pickle.dumps(data)
             client_socket.send(data)
             print("send port\n")
@@ -123,7 +147,7 @@ def peer_handle_command(client_socket, mess):
         case "get":
             client_socket.send(bytes(mess, "utf-8"))
             client_socket.recv(16)
-            local_list = pickle.loads(client_socket.recv(4096))
+            local_list = pickle.loads(client_socket.recv(8192))
             print("local list: ", local_list)
             for lport in local_list:
                 peer_socket = socket.socket()
@@ -133,28 +157,29 @@ def peer_handle_command(client_socket, mess):
         case "fetch":
             fname = command[1]
             client_socket.send(bytes(command[0], "utf-8"))
-            # wait boss return succeed then send continue
             client_socket.recv(16)
+            # wait boss return succeed then send continue
             # send file name want to download
             client_socket.send(bytes(command[1], "utf-8"))
             # wait boss return succeed then send continue
             client_socket.recv(16)
             # receive hostname and port of peer to download file
             info = pickle.loads(client_socket.recv(4096))
-
+            print("can receive", info)
             peer_down_file(info, fname)
         case "public":
             client_socket.send(bytes(command[0], "utf-8"))
             # wait boss return succeed then send continue
             client_socket.recv(16)
 
-            data = [localhost, peerport]
+            data = [localhost, str(peerport)]
             data = pickle.dumps(data)
             client_socket.send(data)
             client_socket.recv(16)
 
             lname = command[1]
             fname = command[2]
+            add_path(lname, fname)
             client_socket.send(bytes(command[2], "utf-8"))
             # wait boss return succeed then send continue
             client_socket.recv(16)
