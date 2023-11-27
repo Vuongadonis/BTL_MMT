@@ -28,7 +28,7 @@ window.config(background="blue")
 # window.resizable(False, False)
 
 photo = PhotoImage(
-    file="C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/image.png")
+    file='image.png')
 # create label
 lbl = Label(window, text="BTL1", font="arial 15 bold",
             background="black", fg="green", image=photo, compound='bottom')

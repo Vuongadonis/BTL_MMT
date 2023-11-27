@@ -10,7 +10,7 @@ root.resizable(False,False)
 
 def call_UI():
     root.destroy();
-    subprocess.call(['python','UI_BTL1/UI_tkinter.py'])
+    subprocess.call(['python','UI_tkinter.py'])
 
 
 # img = PhotoImage(file='./FileSharing.png')
