@@ -231,25 +231,33 @@ def handleConnect(btn, btnAdd):
     server_program()
 
 
-def handleAddlist(btn):
+def getCommand(command):
     global condition_is_met
     global val
     mutex.acquire()
     try:
         condition_is_met = True
-        val = "add list"
+        val = command
     finally:
         mutex.release()
+
+
+def handleAddlist(btn):
+    getCommand("add list")
     messagebox.showinfo("", "add success")
 
 
 def handlePublic(path_val, file_val):
+    command = "public " + path_val.get() + " " + file_val.get()
+    getCommand(command)
     path_val.delete(0, 'end')
     file_val.delete(0, 'end')
     messagebox.showinfo("", "send success")
 
 
 def handleFetch(file_val):
+    command = "fetch " + file_val.get()
+    getCommand(command)
     file_val.delete(0, 'end')
     messagebox.showinfo("", "send success")
 
