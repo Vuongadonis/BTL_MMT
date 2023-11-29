@@ -15,8 +15,8 @@ peerport = 25001
 boss_port = 5000
 # localhost = socket.gethostname()
 # boss_host = "192.168.31.162"
-localhost = socket.gethostname()
-boss_host = socket.gethostname()
+localhost = "192.168.31.162"  # socket.gethostname()
+boss_host = "192.168.31.217"  # socket.gethostname()
 val = ""
 file_list = []  # file_list[[path1, file_name1], [path2, filename2]]
 # file_path = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
@@ -262,6 +262,13 @@ def handleFetch(file_val):
     messagebox.showinfo("", "send success")
 
 
+def handleLocal(local_val):
+    global file_path_save
+    val = local_val.get()
+    file_path_save = val
+    messagebox.showinfo("", "send success")
+
+
 def public_page():
     public_frame = Frame(main_frame)
     public_frame.pack(pady=20)
@@ -304,6 +311,22 @@ def fetch_page():
     sendBtn.pack()
 
 
+def local_page():
+    local_frame = Frame(main_frame)
+
+    local_label = Label(local_frame, text="Local storage",
+                        font="arial 15 bold", fg="green")
+    local_label.pack()
+    local_val = Entry(local_frame, font="arial 15", bg="white",
+                      fg="black", bd=4, width=25)
+    local_val.pack(pady=5)
+
+    local_frame.pack(pady=20)
+    sendBtn = Button(local_frame, text="send", bg="black", fg="white",
+                     font="arial 15", command=lambda: handleLocal(local_val))
+    sendBtn.pack()
+
+
 def deletePage():
     for frame in main_frame.winfo_children():
         frame.destroy()
@@ -319,14 +342,22 @@ def handleOptions(lb, page):
 number = 1
 windowWidth = 400
 windowHeight = 400
-windowX = 100
-windowY = 200
+
+screenWidth = window.winfo_screenwidth()
+screenHeight = window.winfo_screenheight()
+
+newX = (screenWidth - windowWidth) // 2  # Tính toán vị trí mới theo trục X
+newY = (screenHeight - windowHeight) // 2  # Tính toán vị trí mới theo trục Y
+
+windowX = newX
+windowY = newY
 entryWidth = 20
 windowInfo = str(windowWidth) + "x" + str(windowHeight) + \
     "+" + str(windowX) + "+" + str(windowY)
 
 window.title("peer " + str(number))
 window.geometry(windowInfo)
+window.resizable(False, False)
 
 lbl1 = Label(window, text="peer " + str(number),
              font="arial 15 bold", fg="green")
@@ -342,18 +373,22 @@ btn_connect = Button(window, text="connect", bg="black", fg="white",
 btn_connect.place(x=windowWidth-200, y=0)
 
 options_frame = Frame(window, width=350, height=350, bg='#c3c3c3')
-options_frame.place(x=10, y=50)
+options_frame.place(x=25, y=50)
 
-main_frame = Frame(window, width=350, height=350, bg='#c3c3c3',
+main_frame = Frame(window, width=300, height=350, bg='#c3c3c3',
                    highlightbackground="black", highlightthickness=2)
-main_frame.place(x=10, y=90)
+main_frame.place(x=50, y=90)
+
+file_local = Button(window, text="Local", bg="black", fg="white",
+                    font="arial 15", command=lambda: handleOptions(file_local, local_page))
+file_local.place(x=50, y=50)
 
 public = Button(window, text="Public", bg="black", fg="white",
                 font="arial 15", command=lambda: handleOptions(public, public_page))
-public.place(x=50, y=50)
+public.place(x=165, y=50)
 
 fetch = Button(window, text="Fetch", bg="black", fg="white",
                font="arial 15", command=lambda: handleOptions(fetch, fetch_page))
-fetch.place(x=200, y=50)
+fetch.place(x=400-25-25-fetch.winfo_reqwidth(), y=50)
 
 window.mainloop()

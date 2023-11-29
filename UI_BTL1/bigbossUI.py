@@ -17,6 +17,7 @@ sockets_list = [[['LAPTOP-3N96E8CK3', '25001'], ['2324', '2313']], [['LAPTOP-3N9
 # server_host = "192.168.72.183"
 server_host = socket.gethostname()
 server_port = 5000
+flagConnect = False
 
 
 def get_user_input(user_input, frame):
@@ -156,6 +157,10 @@ def handlePing(data, frame):
 
 
 def handleOn(btn):
+    global flagConnect
+    if flagConnect == True:
+        return
+    flagConnect = True
     btn.config(text="On", bg="green")
     serverThread = Thread(target=server_program, args=[
                           server_host, server_port])
@@ -210,8 +215,23 @@ def handleOptions(lb, page):
     page()
 
 
+windowWidth = 400
+windowHeight = 400
+
+screenWidth = window.winfo_screenwidth()
+screenHeight = window.winfo_screenheight()
+
+newX = (screenWidth - windowWidth) // 2  # Tính toán vị trí mới theo trục X
+newY = (screenHeight - windowHeight) // 2  # Tính toán vị trí mới theo trục Y
+
+windowX = newX
+windowY = newY
+
+windowInfo = str(windowWidth) + "x" + str(windowHeight) + \
+    "+" + str(windowX) + "+" + str(windowY)
+
 window.title("bigboss")
-window.geometry("400x500+100+200")
+window.geometry(windowInfo)
 
 lbl = Label(window, text="bigboss", font="arial 15 bold", fg="green")
 # position in the middle of the window
@@ -223,7 +243,7 @@ Onbtn.place(x=300, y=0)
 
 main_frame = Frame(window, width=350, height=350, bg='#c3c3c3',
                    highlightbackground="black", highlightthickness=2)
-main_frame.place(x=10, y=90)
+main_frame.place(x=25, y=90)
 
 Discover = Button(window, text="Discover", bg="black", fg="white", width=10,
                   font="arial 15", command=lambda: handleOptions(Discover, Discover_page))
