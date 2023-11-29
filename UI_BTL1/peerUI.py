@@ -15,13 +15,15 @@ peerport = 25001
 boss_port = 5000
 # localhost = socket.gethostname()
 # boss_host = "192.168.31.162"
-localhost = "192.168.31.162"  # socket.gethostname()
-boss_host = "192.168.31.217"  # socket.gethostname()
+localhost = socket.gethostname()
+boss_host = socket.gethostname()
 val = ""
 file_list = []  # file_list[[path1, file_name1], [path2, filename2]]
 # file_path = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
 file_path = ""
-file_path_save = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
+# file_path_save = "C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/"
+file_path_save = os.path.join(os.path.join(
+    os.environ['USERPROFILE']), 'Desktop') + "\\"
 
 
 def add_path(lname, fname):

@@ -6,8 +6,8 @@ import subprocess
 
 window = Tk()
 
-sockets_list = [[['LAPTOP-3N96E8CK3', '25001'], ['2324', '2313']], [['LAPTOP-3N96E8CK12', '25001'], ['232455', '2313555']]
-                ]
+sockets_list = [
+]
 # socket_list[0][0] = ip(hostname) + port of first peer
 # socket_list[0][1] = list_file of this hostname of first peer
 # socket_list[1][0] = ip(hostname) + port of second peer
