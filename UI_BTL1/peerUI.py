@@ -113,6 +113,7 @@ def peer_down_file(info, file_name):
     print(message)
     if message == message_error:
         print("---------Error----------")
+        messagebox.showerror("", "Download fail")
         return
     # Dòng này nhận kích thước tệp từ máy khách, sau đó chuyển đổi từ dạng bytes sang dạng chuỗi (decode()).
     file_size = peer_socket.recv(1024).decode()
@@ -235,6 +236,7 @@ def server_program():
 def hideOptions():
     public.config(bg="black")
     fetch.config(bg="black")
+    file_local.config(bg="black")
 
 
 def handleConnect(btn, btnAdd):
@@ -265,11 +267,11 @@ def handleAddlist(btn):
 
 
 def handlePublic(path_val, file_val):
+    messagebox.showinfo("", "send success")
     command = "public " + path_val.get() + " " + file_val.get()
     getCommand(command)
     path_val.delete(0, 'end')
     file_val.delete(0, 'end')
-    messagebox.showinfo("", "send success")
 
 
 def handleFetch(file_val):
