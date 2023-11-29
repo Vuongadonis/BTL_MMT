@@ -33,14 +33,16 @@ def add_path(lname, fname):
 
 
 def find_path(file_name):
+    path = "not found"
     for item in file_list:
         if item[1] == file_name:
-            file_path = item[0]
-    print("path: ", file_path)
-    return file_path
+            path = item[0]
+    print("path: ", path)
+    return path
 
 
 def new_connection(addr, conn):
+    message_error = "cannot find this file"  # 22bytes
     str_recv = addr.recv(16)
     str_recv = str(str_recv, "utf-8")
     print(str_recv)
@@ -49,11 +51,17 @@ def new_connection(addr, conn):
     file_name = str(addr.recv(16), "utf-8")
     # find the path of this file in the file_list
     file_path = find_path(file_name)
+    if (file_path == "not found"):
+        addr.send(bytes(message_error, "utf-8"))
+        return
     # check if it còn tồn tại
     if os.path.exists(file_path + file_name) == True:
+        addr.send("find this file success", "utf-8")  # 22bytes
         print("Tệp tồn tại trong hệ thống.")
     else:
+        addr.send(bytes(message_error, "utf-8"))
         print("Tệp không tồn tại trong hệ thống.")
+        return
     # Dòng này mở tệp hình ảnh "image.png" trong chế độ đọc nhị phân (binary).
     file = open(file_path + file_name, "rb")
     # Dòng này lấy kích thước của tệp hình ảnh "image.png" bằng cách sử dụng hàm os.path.getsize()
@@ -90,6 +98,7 @@ def peer_server_create(host, port):
 
 def peer_down_file(info, file_name):
     # connect to peer have file
+    message_error = "cannot find this file"  # 22bytes
     peer_socket = socket.socket()
     peer_socket.connect((info[0], int(info[1])))
     message = "hello from " + str(peerport)
@@ -99,6 +108,12 @@ def peer_down_file(info, file_name):
     peer_socket.recv(16)
     peer_socket.send(bytes(file_name, "utf-8"))
     print(file_name)
+    # check if the other person still has the file I need
+    message = str(peer_socket.recv(22), "utf-8")
+    print(message)
+    if message == message_error:
+        print("---------Error----------")
+        return
     # Dòng này nhận kích thước tệp từ máy khách, sau đó chuyển đổi từ dạng bytes sang dạng chuỗi (decode()).
     file_size = peer_socket.recv(1024).decode()
     print(file_size)
