@@ -433,7 +433,7 @@ file_local = Button(window, text="Local", bg="black", fg="white",
                     font="arial 15", command=lambda: handleOptions(file_local, local_page))
 file_local.place(x=50, y=50)
 
-public = Button(window, text="Public", bg="black", fg="white",
+public = Button(window, text="Publish", bg="black", fg="white",
                 font="arial 15", command=lambda: handleOptions(public, public_page))
 public.place(x=165, y=50)
 
