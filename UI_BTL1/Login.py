@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 import subprocess
 
-list_account = ["giaqui","hoangvuong","trungkien","anhkhoa"]
+list_account_peer = ["giaqui","hoangvuong","trungkien","anhkhoa"]
+list_account_bigboss = ["bigboss"]
 
 root = Tk()
 root.title("Login")
@@ -12,9 +13,12 @@ root.resizable(False, False)
 
 
 def sign_in():
-    if(user.get() in list_account and password.get() == "12345"):
+    if(user.get() in list_account_peer and password.get() == "12345"):
         root.destroy()
         subprocess.call(['python', 'peerUI.py'])
+    elif(user.get() in list_account_bigboss and password.get() == "12345"):
+        root.destroy()
+        subprocess.call(['python', 'bigbossUI.py'])
     else:
         messagebox.showerror("Lỗi","Tài khoản hoặc mặt khẩu không đúng!"
                                    "\n\nVui lòng kiểm tra lại.")
@@ -54,7 +58,7 @@ def on_leave(e):
     if(name == ''):
         password.insert(0,'Mật khẩu')
 password = Entry(frame, width=25, fg='black', border=0,
-                 bg='white', font=('Microsolf Yahei UI Light', 11))
+                 bg='white', font=('Microsolf Yahei UI Light', 11), show='*')
 password.place(x=30, y=150)
 password.insert(0, 'Mật khẩu')
 password.bind('<FocusIn>',on_enter)
