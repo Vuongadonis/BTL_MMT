@@ -16,4 +16,4 @@ Otherwise, you must check ip in setting and change the ip of bigboss and peerdow
 11. You will get the message to notify the result.
 
 12. You can choose the Local path you want to put the file you get from Fetch by click the title Local and write the path.
-13. The path default is you desktop.
+13. The default path is you desktop.
