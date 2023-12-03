@@ -8,6 +8,8 @@ import threading
 window = Tk()
 
 flagConnect = False
+flagListen = False
+
 mutex = threading.Lock()
 condition_is_met = False
 
@@ -46,7 +48,7 @@ def new_connection(addr, conn):
     str_recv = addr.recv(16)
     str_recv = str(str_recv, "utf-8")
     print(str_recv)
-    addr.send(bytes("receive success ", "utf-8"))
+    addr.sendall(bytes("receive success ", "utf-8"))
     # receive file name from peer want to down file
     file_name = str(addr.recv(16), "utf-8")
     # find the path of this file in the file_list
@@ -56,7 +58,7 @@ def new_connection(addr, conn):
         return
     # check if it còn tồn tại
     if os.path.exists(file_path + file_name) == True:
-        addr.send("find this file success", "utf-8")  # 22bytes
+        addr.sendall(bytes("find this file success", "utf-8"))  # 22bytes
         print("Tệp tồn tại trong hệ thống.")
     else:
         addr.send(bytes(message_error, "utf-8"))
@@ -100,13 +102,18 @@ def peer_down_file(info, file_name):
     # connect to peer have file
     message_error = "cannot find this file"  # 22bytes
     peer_socket = socket.socket()
-    peer_socket.connect((info[0], int(info[1])))
+    try:
+        peer_socket.connect((info[0], int(info[1])))
+        print("Kết nối thành công đến", peer_socket.getpeername())
+    except socket.error as err:
+        print("Không thể kết nối:", err)
+        return
     message = "hello from " + str(peerport)
-    peer_socket.send(bytes(message, "utf-8"))
+    peer_socket.sendall(bytes(message, "utf-8"))
     print(info)
     # Dòng này gửi file name qua cho peer kia
     peer_socket.recv(16)
-    peer_socket.send(bytes(file_name, "utf-8"))
+    peer_socket.sendall(bytes(file_name, "utf-8"))
     print(file_name)
     # check if the other person still has the file I need
     message = str(peer_socket.recv(22), "utf-8")
@@ -210,9 +217,20 @@ def peer_handle_command(client_socket, mess):
             print("public: ", lname, fname)
 
 
-def thread_peer_client(host, port):
+def thread_peer_client(host, port, btn, btnAdd):
     client_socket = socket.socket()
-    client_socket.connect((host, port))
+    try:
+        client_socket.connect((host, port))
+        print("Kết nối thành công đến", client_socket.getpeername())
+        btn.config(bg="green")
+        btnAdd.config(bg="black")
+        flagConnectSuccess = True
+    except socket.error as err:
+        print("Không thể kết nối:", err)
+        global flagConnect
+        flagConnect = False
+        flagConnectSuccess = False
+        return
     global condition_is_met
     while True:
         # Thực hiện các xử lý và kiểm tra điều kiện
@@ -224,13 +242,23 @@ def thread_peer_client(host, port):
         peer_handle_command(client_socket, val)
 
 
-def server_program():
+def server_program(btn, btnAdd):
+    # thread ket noi den bigboss
+    nconn2 = Thread(target=thread_peer_client, args=[
+                    boss_host, boss_port, btn, btnAdd])
+    nconn2.start()
+
+
+def handleListen(btnListen):
     # thread chay gui thong tin den cac peer
+    global flagListen
+    if flagListen == True:
+        return
+    flagListen = True
     nconn1 = Thread(target=peer_server_create, args=[localhost, peerport])
     nconn1.start()
-    # thread ket noi den bigboss
-    nconn2 = Thread(target=thread_peer_client, args=[boss_host, boss_port])
-    nconn2.start()
+    btnListen.config(bg="green")
+    btnListen.config(text="ON")
 
 
 def hideOptions():
@@ -241,13 +269,12 @@ def hideOptions():
 
 def handleConnect(btn, btnAdd):
     global flagConnect
+    global flagConnectSuccess
     if flagConnect == True:
         return
     flagConnect = True
-    btn.config(bg="green")
-    btnAdd.config(bg="black")
 
-    server_program()
+    server_program(btn, btnAdd)
 
 
 def getCommand(command):
@@ -368,7 +395,7 @@ screenHeight = window.winfo_screenheight()
 newX = (screenWidth - windowWidth) // 2  # Tính toán vị trí mới theo trục X
 newY = (screenHeight - windowHeight) // 2  # Tính toán vị trí mới theo trục Y
 
-windowX = newX
+windowX = int(newX + windowWidth)
 windowY = newY
 entryWidth = 20
 windowInfo = str(windowWidth) + "x" + str(windowHeight) + \
@@ -389,7 +416,11 @@ btn_addlist.place(x=windowWidth-100, y=0)
 
 btn_connect = Button(window, text="connect", bg="black", fg="white",
                      font="arial 15", command=lambda: handleConnect(btn_connect, btn_addlist))
-btn_connect.place(x=windowWidth-200, y=0)
+btn_connect.place(x=windowWidth-280, y=0)
+
+btn_listen = Button(window, text="OFF", bg="black", fg="white",
+                    font="arial 15", command=lambda: handleListen(btn_listen))
+btn_listen.place(x=windowWidth-180, y=0)
 
 options_frame = Frame(window, width=350, height=350, bg='#c3c3c3')
 options_frame.place(x=25, y=50)

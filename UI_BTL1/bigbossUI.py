@@ -224,7 +224,7 @@ screenHeight = window.winfo_screenheight()
 newX = (screenWidth - windowWidth) // 2  # Tính toán vị trí mới theo trục X
 newY = (screenHeight - windowHeight) // 2  # Tính toán vị trí mới theo trục Y
 
-windowX = newX
+windowX = int(newX - windowWidth)
 windowY = newY
 
 windowInfo = str(windowWidth) + "x" + str(windowHeight) + \
