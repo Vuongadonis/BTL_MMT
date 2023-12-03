@@ -17,3 +17,6 @@ Otherwise, you must check ip in setting and change the ip of bigboss and peerdow
 
 12. You can choose the Local path you want to put the file you get from Fetch by click the title Local and write the path.
 13. The default path is you desktop.
+14. List peer account: giaqui, hoangvuong, trungkien, anhkhoa
+15. Bigboss account: bigboss
+16. Password for peer and bigboss: 12345
