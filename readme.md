@@ -1,28 +1,19 @@
-if you run just in your laptop, do not have to chang the host and port
-Otherwise, you must check ip in setting and change the ip of bigboss and peerdown
+If you run just in your laptop, do not have to change the host and port
+Otherwise, you must check ip in setting and change the ip of bigboss and peerdown (you must use the same wifi)
 
-1. run bigbossBTL.py.py
-2. run peer_down.py
-3. write "add list" in terminal of peer_down (do not have "")
-4. write public lname fname in terminal of peer_down
-   note: lname is the path of your file
-   example: C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/qui.png
-   -> lname: C:/Users/Acer/Desktop/DHBK/HK5/MMT/lab/lab2/lab2protocol/file-sharing/
-   -> fname: qui.png
+1. Run bigbossBTL.py.py
+2. Run peer_down.py
+3. Click to ON bigboss.
+4. Click to connect peer with bigboss.
+5. Click to ON peer to listen if any peer want to connect with this peer.
+6. Click Addlist to add IP and port of your peer to bigboss.
 
-5. you can check "discover hostname" (write in terminal of test_list)
-6. you can "fetch lname" (write in terminal of peer_down)
-   note: just fetch the file already exist, we haven't process this error
+7. If you want to use function Ping or Discover in bigboss, just click to the title Ping or Discover and write the IP you want to ping or discover (get the list file public of this IP).
+   
+9. If you want to Publish file, you click to the title Publish and write the path and file name to publish to the bigboss.
+   
+10. If you want to Fetch file, you click to the title Fetch and write the file name you want to download.
+11. You will get the message to notify the result.
 
-7. the work upload and download file just in peer_down...
-   Note: create a folder and chang the path to check command "fetch lname"
-
----
-
-example for testing
-
-1. run bigbossBTL.py
-2. run peer_down.py
-3. write "add list" into terminal of peer_down.py (do not write "")
-4. write public path image.png (with path is your path of folder file-sharing)
-5. write fetch image.png
+12. You can choose the Local path you want to put the file you get from Fetch by click the title Local and write the path.
+13. The path default is you desktop.
