@@ -13,18 +13,26 @@ root.resizable(False, False)
 
 
 def sign_in():
-    if (user.get() in list_account_peer and password.get() == "12345"):
-        root.destroy()
-        subprocess.call(['python', 'peerUI.py'])
-    elif (user.get() in list_account_bigboss and password.get() == "12345"):
-        root.destroy()
-        subprocess.call(['python', 'bigbossUI.py'])
+    if (user.get() in list_account_peer):
+        if(password.get() == "12345"):
+            root.destroy()
+            subprocess.call(['python', 'peerUI.py'])
+        else:
+            messagebox.showerror("Lỗi", "Mật khẩu không chính xác!"
+                                        "\n\nVui lòng kiểm tra lại.")
+    elif (user.get() in list_account_bigboss):
+        if(password.get() == "12345"):
+            root.destroy()
+            subprocess.call(['python', 'bigbossUI.py'])
+        else:
+            messagebox.showerror("Lỗi", "Mật khẩu không chính xác!"
+                                        "\n\nVui lòng kiểm tra lại.")
     else:
-        messagebox.showerror("Lỗi", "Tài khoản hoặc mặt khẩu không đúng!"
+        messagebox.showerror("Lỗi", "Tài khoản không tồn tại!"
                              "\n\nVui lòng kiểm tra lại.")
 
 
-img = PhotoImage(file='img.png')
+img = PhotoImage(file='Login.png')
 Label(root, image=img, bg='white').place(x=50, y=50)
 
 frame = Frame(root, width=350, height=350, bg='white')
