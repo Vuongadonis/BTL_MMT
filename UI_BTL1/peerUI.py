@@ -63,6 +63,7 @@ def new_connection(addr, conn):
     else:
         addr.send(bytes(message_error, "utf-8"))
         print("Tệp không tồn tại trong hệ thống.")
+        messagebox.showerror("Error", "Can not find this file")
         return
     # Dòng này mở tệp hình ảnh "image.png" trong chế độ đọc nhị phân (binary).
     file = open(file_path + file_name, "rb")
@@ -107,6 +108,7 @@ def peer_down_file(info, file_name):
         print("Kết nối thành công đến", peer_socket.getpeername())
     except socket.error as err:
         print("Không thể kết nối:", err)
+        messagebox.showerror("Error", "Can not connect to the other")
         return
     message = "hello from " + str(peerport)
     peer_socket.sendall(bytes(message, "utf-8"))
@@ -120,7 +122,7 @@ def peer_down_file(info, file_name):
     print(message)
     if message == message_error:
         print("---------Error----------")
-        messagebox.showerror("", "Download fail")
+        messagebox.showerror("Error", "Download fail")
         return
     # Dòng này nhận kích thước tệp từ máy khách, sau đó chuyển đổi từ dạng bytes sang dạng chuỗi (decode()).
     file_size = peer_socket.recv(1024).decode()
@@ -193,7 +195,12 @@ def peer_handle_command(client_socket, mess):
             # send file name want to download
             client_socket.send(bytes(command[1], "utf-8"))
             # wait boss return succeed then send continue
-            client_socket.recv(16)
+            messageBoss = client_socket.recv(21)
+            messageBoss = str(messageBoss, "utf-8")
+            print(messageBoss)
+            if (messageBoss[0] == "d"):
+                messagebox.showerror("Error", "Server Cannot find file info")
+                return
             # receive hostname and port of peer to download file
             info = pickle.loads(client_socket.recv(4096))
             print("can receive", info)
@@ -230,6 +237,7 @@ def thread_peer_client(host, port, btn, btnAdd):
         global flagConnect
         flagConnect = False
         flagConnectSuccess = False
+        messagebox.showerror("Error", "Can not connect to server")
         return
     global condition_is_met
     while True:

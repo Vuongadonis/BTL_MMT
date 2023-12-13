@@ -3,6 +3,7 @@ import socket
 from threading import Thread
 import pickle
 import subprocess
+from tkinter import messagebox
 
 window = Tk()
 
@@ -93,7 +94,7 @@ def new_connection(addr, conn):
                 print("fetch")
                 # receive file name peer want to download
                 file_name = str(addr.recv(16), "utf-8")
-                addr.send(bytes("receive success ", "utf-8"))
+                # addr.sendall(bytes("receive success ", "utf-8"))
                 # send hostname and port have this file
                 flag = True
                 # sockets_list = [
@@ -110,13 +111,16 @@ def new_connection(addr, conn):
                                     print(
                                         f"Index: {index1, index2, index3}, Value: {k, client[0]}")
                                     print(client[0])
+                                    addr.sendall(
+                                        bytes("receive success ", "utf-8"))
                                     data = pickle.dumps(client[0])
                                     addr.send(data)
                                     flag = False
 
                 if flag:
                     print("send error")
-                    # addr.send(bytes("do not have this file", "utf-8"))
+                    messagebox.showerror("Error", "Cannot find file")
+                    addr.sendall(bytes("do not have this file", "utf-8"))
             case "public":
                 ip_port = pickle.loads(addr.recv(4096))
                 addr.send(bytes("receive success ", "utf-8"))
